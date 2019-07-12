@@ -2,8 +2,9 @@ const express = require("express");
 const reviewsRouter = express.Router();
 const { reviewsServices } = require("./reviewsServices");
 const jsonParser = express.json();
-const jwt = require("jsonwebtoken");
-const { requireAuth } = require("../Middleware/basic-auth");
+// const jwt = require("jsonwebtoken");
+const { requireAuth } = require("../Middleware/jwt-auth");
+// const AuthService = require("../auth/auth-services");
 
 reviewsRouter.route("/").get((req, res, next) => {
   const knexInstance = req.app.get("db");
@@ -14,37 +15,10 @@ reviewsRouter.route("/").get((req, res, next) => {
     })
     .catch(next);
 });
-reviewsRouter.route("/login").post((req, res) => {
-  const user = {
-    id: 1,
-    name: "Ben",
-    email: "ben@snailmail.com"
-  };
-  jwt.sign({ user }, "secretkey", (err, token) => {
-    res.json({
-      token
-    });
-  });
-});
 
 reviewsRouter
   .route("/add")
-
   .post(verifyToken, requireAuth, jsonParser, (req, res, next) => {
-    jwt.verify(
-      (token,
-      "secretkey",
-      (err, authData) => {
-        if (err) {
-          res.status(403);
-        } else {
-          res.json({
-            message: "post created",
-            authData
-          });
-        }
-      })
-    );
     const knexInstance = req.app.get("db");
     const {
       tagline,
