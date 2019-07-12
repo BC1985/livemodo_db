@@ -12,14 +12,28 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
       return res.status(400).json({
         error: `Missing ${key} in request body`
       });
-  AuthService.getUserByUserName(req.app.get("db"), loginUser)
+  AuthService.getUserByUserName(req.app.get("db"), loginUser.username)
     .then(dbUser => {
       if (!dbUser) {
         return res.status(400).json({
           error: "Incorrect username or password"
         });
       }
-      res.send("ok");
+      return AuthService.comparePasswords(loginUser.password, dbUser.password)
+        .then(console.log(dbUser.password))
+        .then(compareMatch => {
+          if (!compareMatch) {
+            return res.status(400).json({
+              error: "Incorrect username or password"
+            });
+          }
+          res.send("ok");
+          const sub = dbUser.username;
+          const payload = { id: dbUser.id };
+          res.send({
+            authToken: AuthService.createJwt(sub, payload)
+          });
+        });
     })
     .catch(next);
   // const user = {
@@ -27,28 +41,15 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
   //   name: "Ben",
   //   email: "ben@snailmail.com"
   // };
-  jwt.sign({ user }, "secretkeyyall", (err, token) => {
-    res.json({
-      token
-    });
-  });
+  // jwt.sign({ user }, "secretkeyyall", (err, token) => {
+  //   res.json({
+  //     token
+  //   });
+  // });
 });
 
 authRouter.route("/post-review").post(verifyToken, (req, res) => {
-  jwt.verify(
-    (req.token,
-    "secretkeyyall",
-    (err, authData) => {
-      if (err) {
-        res.status(403);
-      } else {
-        res.json({
-          message: "post created",
-          authData
-        });
-      }
-    })
-  );
+  AuthService.verifyJwt;
 });
 
 function verifyToken(req, res, next) {
