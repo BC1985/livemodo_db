@@ -5,6 +5,7 @@ const jsonBodyParser = express.json();
 const AuthService = require("./auth-services");
 
 authRouter.post("/login", jsonBodyParser, (req, res, next) => {
+  const knexInstance = req.app.get("db");
   const { username, password } = req.body;
   const loginUser = { username, password };
   for (const [key, value] of Object.entries(loginUser))
@@ -12,11 +13,11 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
       return res.status(400).json({
         error: `Missing ${key} in request body`
       });
-  AuthService.getUserByUserName(req.app.get("db"), loginUser.username)
+  AuthService.getUserByUserName(knexInstance, loginUser.username)
     .then(dbUser => {
       if (!dbUser) {
         return res.status(400).json({
-          error: "Incorrect username or password"
+          error: "Incorrect username"
         });
       }
       return AuthService.comparePasswords(loginUser.password, dbUser.password)
@@ -27,7 +28,6 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
               error: "Incorrect username or password"
             });
           }
-          res.send("ok");
           const sub = dbUser.username;
           const payload = { id: dbUser.id };
           res.send({
@@ -36,16 +36,6 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
         });
     })
     .catch(next);
-  // const user = {
-  //   id: 1,
-  //   name: "Ben",
-  //   email: "ben@snailmail.com"
-  // };
-  // jwt.sign({ user }, "secretkeyyall", (err, token) => {
-  //   res.json({
-  //     token
-  //   });
-  // });
 });
 
 authRouter.route("/post-review").post(verifyToken, (req, res) => {
