@@ -1,5 +1,4 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const authRouter = express.Router();
 const jsonBodyParser = express.json();
 const AuthService = require("./auth-services");
@@ -38,13 +37,13 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
     .catch(next);
 });
 
-authRouter.route("/post-review").post(verifyToken, (req, res) => {
-  AuthService.verifyJwt;
-});
+// authRouter.route("/").post(verifyToken, (req, res) => {
+//   AuthService.verifyJwt;
+// });
 
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
-  if (typeof bearerHeader !== undefinded) {
+  if (typeof bearerHeader !== undefined) {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
     req.token = bearerToken(next);

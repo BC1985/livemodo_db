@@ -2,9 +2,7 @@ const express = require("express");
 const reviewsRouter = express.Router();
 const { reviewsServices } = require("./reviewsServices");
 const jsonParser = express.json();
-// const jwt = require("jsonwebtoken");
 const { requireAuth } = require("../Middleware/jwt-auth");
-// const AuthService = require("../auth/auth-services");
 
 reviewsRouter.route("/").get((req, res, next) => {
   const knexInstance = req.app.get("db");
@@ -17,7 +15,7 @@ reviewsRouter.route("/").get((req, res, next) => {
 });
 
 reviewsRouter
-  .route("/add")
+  .route("/")
   .post(verifyToken, requireAuth, jsonParser, (req, res, next) => {
     const knexInstance = req.app.get("db");
     const {
@@ -34,6 +32,7 @@ reviewsRouter
       band_name,
       venue,
       user_id,
+      posted,
       show_date,
       content,
       rating
