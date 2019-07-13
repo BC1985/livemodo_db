@@ -14,8 +14,8 @@ userRouter
   })
   .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get("db");
-    const { first_name, last_name, username, rating } = req.body;
-    const newUser = { first_name, last_name, username, rating };
+    const { first_name, last_name, username, password } = req.body;
+    const newUser = { first_name, last_name, username, password };
 
     for (const [key, value] of Object.entries(newUser))
       if (value === null) {
@@ -23,10 +23,28 @@ userRouter
           error: { message: `Missing ${key} in request body` }
         });
       }
+    const passwordError = userServices.validatePassword(password);
+    if (passwordError) return res.status(400).json({ error: passwordError });
+
     userServices
-      .createNewUser(knexInstance, newUser)
-      .then(user => {
-        res.status(201).json(user);
+      .hasUserWithUserName(knexInstance, username)
+      .then(hasUserWithUserName => {
+        if (hasUserWithUserName)
+          return res.status(400).json({ error: `username already taken` });
+        return userServices.hashPassword(password).then(hashPassword => {
+          const newUser = {
+            username,
+            password: hashPassword,
+            first_name,
+            last_name
+          };
+
+          return userServices
+            .inserUSer(req.app.get("db"), newUser)
+            .then(user => {
+              res.status(201).json(userServices.serializeUser(user));
+            });
+        });
       })
       .catch(next);
   });
