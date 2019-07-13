@@ -92,6 +92,39 @@ reviewsRouter
         res.status(201).send(`Review with id ${id} deleted`);
       })
       .catch(next);
+  })
+  .put(jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get("db");
+    const { id } = req.params;
+    const {
+      band_name,
+      tagline,
+      venue,
+      user_id,
+      show_date,
+      content,
+      rating
+    } = req.body;
+    const reviewToUpdate = {
+      tagline,
+      band_name,
+      venue,
+      user_id,
+      show_date,
+      content,
+      rating
+    };
+    const numberOfValues = Object.values(reviewToUpdate).filter(Boolean).length;
+    console.log(reviewToUpdate);
+    if (numberOfValues == 0) {
+      res.status(400).json({ error: "Must contain at least one field" });
+    }
+    reviewsServices
+      .updateReviewById(knexInstance, id, reviewToUpdate)
+      .then(() => {
+        res.status(200).send(`Review with ID ${id} updated`);
+      })
+      .catch(next);
   });
 
 reviewsRouter.route("/by_user/:user_id").get((req, res, next) => {

@@ -25,16 +25,22 @@ const reviewsServices = {
       .insert(review);
   },
   getReviewById(knex, id) {
-    return knex
+    return knex("reviews")
       .from("reviews")
       .select("*")
       .where("id", id);
   },
   deleteReview(knex, id) {
-    return knex
+    return knex("reviews")
       .from("reviews")
       .where({ id })
       .del();
+  },
+  updateReviewById(knex, id, updatedFields) {
+    return knex("reviews")
+      .from("reviews")
+      .where("id", id)
+      .update(updatedFields);
   }
 };
 
