@@ -77,8 +77,8 @@ userRouter
   .put(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
-    const { first_name, last_name, username, rating } = req.body;
-    const userToUpdate = { first_name, last_name, username, rating };
+    const { first_name, last_name, username } = req.body;
+    const userToUpdate = { first_name, last_name, username };
     const numberOfValues = Object.values(userToUpdate).filter(Boolean).length;
     if (numberOfValues === 0) {
       return res.status(400).json({
