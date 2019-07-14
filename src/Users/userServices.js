@@ -24,7 +24,7 @@ const userServices = {
       .first()
       .then(user => !!user);
   },
-  inserUSer(knex, newUser) {
+  insertUser(knex, newUser) {
     return knex
       .insert(newUser)
       .into("users")
@@ -34,7 +34,7 @@ const userServices = {
 
   validatePassword(password) {
     if (password.length < 8) {
-      return "password must be less than 72 characters";
+      return "password must be at least 8 characters";
     }
     if (password.length > 72) {
       return "password must be less than 72 characters";
@@ -65,7 +65,8 @@ const userServices = {
       id: user.id,
       first_name: xss(user.full_name),
       last_name: xss(user.last_name),
-      username: xss(user.username)
+      username: xss(user.username),
+      email: xss(user.email)
     };
   }
 };
