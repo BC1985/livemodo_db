@@ -14,45 +14,47 @@ reviewsRouter.route("/").get((req, res, next) => {
     .catch(next);
 });
 
-reviewsRouter.route("/").post(jsonParser, (req, res, next) => {
-  const knexInstance = req.app.get("db");
-  const {
-    tagline,
-    band_name,
-    venue,
-    user_id,
-    show_date,
-    content,
-    posted,
-    rating
-  } = req.body;
-  const newReview = {
-    tagline,
-    band_name,
-    venue,
-    user_id,
-    posted,
-    show_date,
-    content,
-    rating
-  };
-  for (const [key, value] of Object.entries(newReview))
-    if (value === null) {
-      return res.status(400).json({
-        error: { message: `Missing ${key} in request body` }
-      });
-    }
-  reviewsServices
-    .postReview(knexInstance, newReview)
-    .then(review => {
-      res.status(200).json(review[0]);
-    })
-    .catch(next);
-});
+reviewsRouter
+  .route("/")
+  .post(verifyToken, requireAuth, jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get("db");
+    const {
+      tagline,
+      band_name,
+      venue,
+      user_id,
+      show_date,
+      content,
+      posted,
+      rating
+    } = req.body;
+    const newReview = {
+      tagline,
+      band_name,
+      venue,
+      user_id,
+      posted,
+      show_date,
+      content,
+      rating
+    };
+    for (const [key, value] of Object.entries(newReview))
+      if (value === null) {
+        return res.status(400).json({
+          error: { message: `Missing ${key} in request body` }
+        });
+      }
+    reviewsServices
+      .postReview(knexInstance, newReview)
+      .then(review => {
+        res.status(200).json(review[0]);
+      })
+      .catch(next);
+  });
 
 function verifyToken(req, res, next) {
-  const bearerHeader = req.get["Authorization"];
-  if (typeof bearerHeader !== "undefined") {
+  const bearerHeader = req.get("Authorization");
+  if (bearerHeader) {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
     req.token = bearerToken;

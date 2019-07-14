@@ -14,8 +14,8 @@ userRouter
   })
   .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get("db");
-    const { first_name, last_name, username, password } = req.body;
-    const newUser = { first_name, last_name, username, password };
+    const { first_name, last_name, username, password, email } = req.body;
+    const newUser = { first_name, last_name, username, email, password };
 
     for (const [key, value] of Object.entries(newUser))
       if (value === null) {
@@ -29,18 +29,19 @@ userRouter
     userServices
       .hasUserWithUserName(knexInstance, username)
       .then(hasUserWithUserName => {
-        if (hasUserWithUserName)
+        if (hasUserWithUserName) {
           return res.status(400).json({ error: `username already taken` });
-        return userServices.hashPassword(password).then(hashPassword => {
+        }
+        return userServices.hashPassword(password).then(hashedPassword => {
           const newUser = {
             username,
-            password: hashPassword,
+            password: hashedPassword,
             first_name,
-            last_name
+            last_name,
+            email
           };
-
           return userServices
-            .inserUSer(req.app.get("db"), newUser)
+            .insertUser(req.app.get("db"), newUser)
             .then(user => {
               res.status(201).json(userServices.serializeUser(user));
             });

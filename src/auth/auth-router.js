@@ -29,7 +29,7 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
           }
           const sub = dbUser.username;
           const payload = { id: dbUser.id };
-          res.send({
+          res.status(200).send({
             authToken: AuthService.createJwt(sub, payload)
           });
         });
@@ -43,10 +43,10 @@ authRouter.post("/login", jsonBodyParser, (req, res, next) => {
 
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
-  if (typeof bearerHeader !== undefined) {
+  if (bearerHeader) {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
-    req.token = bearerToken(next);
+    req.token = bearerToken;
   } else {
     res.status(403).send("forbidden");
   }
