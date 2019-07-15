@@ -22,7 +22,8 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-      user_id,
+
+      username,
       show_date,
       content,
       posted,
@@ -32,7 +33,7 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-      user_id,
+      username,
       posted,
       show_date,
       content,
@@ -100,7 +101,7 @@ reviewsRouter
       band_name,
       tagline,
       venue,
-      user_id,
+      username,
       show_date,
       content,
       rating
@@ -109,7 +110,7 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-      user_id,
+      username,
       show_date,
       content,
       rating
