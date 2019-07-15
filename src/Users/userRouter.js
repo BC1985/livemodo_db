@@ -68,10 +68,10 @@ userRouter
     userServices
       .deleteUser(knexInstance, id)
       .then(() => {
-        res
-          .status(204)
-          .send("deleted")
-          .end();
+        if (!id) {
+          res.status(404).send(`User doesn't exist`);
+        }
+        res.status(200).send(`User with Id ${id} deleted`);
       })
       .catch(next);
   })
