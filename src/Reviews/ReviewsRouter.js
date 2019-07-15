@@ -45,6 +45,8 @@ reviewsRouter
           error: { message: `Missing ${key} in request body` }
         });
       }
+    newReview.user_id = req.user.id;
+    newReview.username = req.user.username;
     reviewsServices
       .postReview(knexInstance, newReview)
       .then(review => {
@@ -86,11 +88,11 @@ reviewsRouter
     const { id } = req.params;
     reviewsServices
       .deleteReview(knexInstance, id)
-      .then(id => {
+      .then(() => {
         if (!id) {
           res.status(404).send("No review found");
         }
-        res.status(201).send(`Review with id ${id} deleted`);
+        res.status(200).send(`Review with id ${id} deleted`);
       })
       .catch(next);
   })

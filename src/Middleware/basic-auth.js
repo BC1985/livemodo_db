@@ -13,6 +13,7 @@ function requireAuth(req, res, next) {
           error: "Unauthorized request"
         });
       }
+      req.user = user;
       next();
     }
   );
