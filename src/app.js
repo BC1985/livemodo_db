@@ -9,8 +9,8 @@ const reviewsRouter = require("./Reviews/ReviewsRouter");
 const authRouter = require("./auth/auth-router");
 const app = express();
 
-// const morganOption = NODE_ENV === "production";
-app.use(morgan("dev"));
+const morganSetting = process.env.NODE_ENV === "production" ? "tiny" : "common";
+app.use(morgan(morganSetting));
 app.use(cors("*"));
 app.use(helmet());
 app.use("/api/users", userRouter);

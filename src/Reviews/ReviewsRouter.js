@@ -118,7 +118,6 @@ reviewsRouter
       rating
     };
     const numberOfValues = Object.values(reviewToUpdate).filter(Boolean).length;
-    console.log(reviewToUpdate);
     if (numberOfValues == 0) {
       res.status(400).json({ error: "Must contain at least one field" });
     }
