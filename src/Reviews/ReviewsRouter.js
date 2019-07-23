@@ -33,7 +33,7 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-      username,
+      // username,
       posted,
       show_date,
       content,
@@ -46,7 +46,7 @@ reviewsRouter
         });
       }
     newReview.user_id = req.user.id;
-    newReview.username = req.user.username;
+    // newReview.username = req.user.username;
     reviewsServices
       .postReview(knexInstance, newReview)
       .then(review => {
