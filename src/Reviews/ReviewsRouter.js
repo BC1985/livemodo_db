@@ -22,8 +22,6 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-
-      username,
       show_date,
       content,
       posted,
@@ -33,7 +31,6 @@ reviewsRouter
       tagline,
       band_name,
       venue,
-      username,
       posted,
       show_date,
       content,
@@ -46,11 +43,12 @@ reviewsRouter
         });
       }
     newReview.user_id = req.user.id;
-    newReview.username = req.user.username;
     reviewsServices
       .postReview(knexInstance, newReview)
       .then(review => {
-        res.status(200).json(review[0]);
+        const dbReview = review[0];
+        dbReview.username = req.user.username;
+        res.status(200).json(dbReview);
       })
       .catch(next);
   });
