@@ -43,11 +43,11 @@ reviewsRouter
         });
       }
     newReview.user_id = req.user.id;
+    newReview.username = req.user.username;
     reviewsServices
       .postReview(knexInstance, newReview)
       .then(review => {
         const dbReview = review[0];
-        dbReview.username = req.user.username;
         res.status(200).json(dbReview);
       })
       .catch(next);
