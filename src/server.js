@@ -5,7 +5,7 @@ const { PORT, DATABASE_URL, DB_URL } = require("./config");
 const db = knex({
   client: "pg",
   // change below to DATABASE_URL for heroku connection
-  connection: DATABASE_URL
+  connection: DB_URL
   // "postgresql://postgres@localhost/livemodo"
 });
 
