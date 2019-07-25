@@ -16,7 +16,7 @@ const reviewsServices = {
         "tagline",
         "band_name",
         "venue",
-        // "username",
+        "username",
         "show_date",
         "content",
         "rating"
