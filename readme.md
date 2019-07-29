@@ -1,26 +1,42 @@
-# Express Boilerplate!
+# Livemodo_db
 
-This is a boilerplate project used for starting new projects!
+This is the backend app for the client that can be found in [this repo](https://github.com/BC1985/livemodo).
 
-## Set up
+## Table of Content
+* [General Info](#general-info)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Features](#features)
+* [Upcoming Features](#upcoming-features)
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+### General Info
+Livemodo is a wiki database of live shows and concert reviews. Think of it as a kind of Yelp for live music aficionados. With this app registered users are able to submit detailed reviews of live shows attended for fellow music lovers who are interested in discovering new music and live show venues.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+### Technologies
+Project is created with:
+* Node
+* Express
+* PostgreSQL
 
-## Scripts
+### Setup
+Clone this repo to your desktop and type `npm run dev` to start the server.
 
-Start the application `npm start`
+### Features 
+* Register as user
+* Retrieve user by id
+* Retrieve reviews by user ID
+* Submit reviews as registered user
+* User authentication using Json Web Tokens
 
-Start nodemon for the application `npm run dev`
 
-Run the tests `npm test`
+### Upcoming features
 
-## Deploying
+* Reviews rating option- Reviews can be upvoted or downvoted based on their helpfulness.
+* Reviews ticker- Registered users will have the number of reviews previsouly submitted with every new review.
+* Comment function
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+
+
+
+
+
