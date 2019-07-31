@@ -2,10 +2,36 @@ const knex = require("knex");
 const jwt = require("jsonwebtoken");
 const app = require("../src/app");
 const helpers = require("./test-helpers");
+const bcrypt = require("bcryptjs");
 
 describe("Auth Endpoints", function() {
   let db;
-
+  const testUsers = [
+    {
+      id: 1,
+      username: "test-user-1",
+      first_name: "Test user 1",
+      last_name: "test last name 2",
+      password: "password",
+      email: "test@email.com"
+    },
+    {
+      id: 2,
+      username: "test-user-2",
+      first_name: "Test user 2",
+      last_name: "test last name 2",
+      password: "password",
+      email: "test@email.com"
+    },
+    {
+      id: 3,
+      username: "test-user-3",
+      first_name: "Test user 3",
+      last_name: "test last name 3",
+      password: "password",
+      email: "test@email.com"
+    }
+  ];
   //   const testUsers = [
   //     {
   //       id: 1,
@@ -32,34 +58,8 @@ describe("Auth Endpoints", function() {
   //       email: "test3@email.com"
   //     }
   //   ];
-  // const testUser = testUsers[0];
+  const testUser = testUsers[0];
   function seedUsers(db, testUsers) {
-    let testUsers = [
-      {
-        id: 1,
-        username: "test-user-1",
-        first_name: "Test user 1",
-        last_name: "test last name 2",
-        password: "password",
-        email: "test@email.com"
-      },
-      {
-        id: 2,
-        username: "test-user-2",
-        first_name: "Test user 2",
-        last_name: "test last name 2",
-        password: "password",
-        email: "test@email.com"
-      },
-      {
-        id: 3,
-        username: "test-user-3",
-        first_name: "Test user 3",
-        last_name: "test last name 3",
-        password: "password",
-        email: "test@email.com"
-      }
-    ];
     const preppedUsers = testUsers.map(user => ({
       ...user,
       password: bcrypt.hashSync(user.password, 1)
@@ -98,7 +98,7 @@ describe("Auth Endpoints", function() {
           .post("/api/auth/login")
           .send(loginAttemptBody)
           .expect(400, {
-            error: `Missing '${field}' in request body`
+            error: `Missing ${field} in request body`
           });
       });
     });
@@ -108,7 +108,7 @@ describe("Auth Endpoints", function() {
       return supertest(app)
         .post("/api/auth/login")
         .send(userInvalidUser)
-        .expect(400, { error: `Incorrect username or password` });
+        .expect(400, { error: `Incorrect username` });
     });
 
     it(`responds 400 'invalid username or password' when bad password`, () => {
