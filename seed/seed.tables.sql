@@ -1,4 +1,4 @@
-INSERT INTO users(first_name, last_name, username, password, email) VALUES('John', 'Doe', 'Poshdong','11AAaa!!'), ('Jeffrey', 'Lebowski', 'Dude', '22BBbb@@'), ('Barton', 'Fink', 'bfunk', '33CCcc##');
+INSERT INTO users(first_name, last_name, username, password, email) VALUES('John', 'Doe', 'Poshdong','11AAaa!!'), ('Jeffrey', 'Lebowski', 'Dude', '22BBbb@@')
 
-INSERT INTO reviews(tagline, band_name, venue, user_id, show_date, posted, content, rating) VALUES('Awsome band!', 'The Jumping Jellybeans','Bobs Crab Shack', '1', '6/29/2016', '6/29/2016', 'Im a little teapot, short and stout', '3'), ('Worst band ever!', 'Pickleback', 'Yolands Prophylactic Emporium', '2', '4/18/2018','4/18/2018', 'this is my handle, this is my spout','2'), ('Keyboard players hot','The Weavles', 'Wembley Stadium', '3', '3/12/1997','3/12/1997','where i get all steamed up hear me shout. Tip me over and pour me out', '5');
+INSERT INTO reviews(tagline, band_name, venue, show_date, posted, content, rating, username) VALUES('tagline', 'band','venue', '2017-12-31T05:00:00.000Z', '2017-12-31T05:00:00.000Z', 'content', '3','username1'), ('tagline', 'band', 'venue', '2017-12-31T05:00:00.000Z','2017-12-31T05:00:00.000Z', 'content','3','username2')
  
