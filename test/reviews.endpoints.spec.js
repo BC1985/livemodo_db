@@ -92,8 +92,8 @@ describe("Reviews Endpoints", function() {
 
       beforeEach("insert reviews", () => {
         return db
-          .into("users")
-          .insert(testUsers)
+          .into("reviews")
+          .insert(testReviews)
           .then(() => {
             return db.into("reviews").insert(testReviews);
           });
@@ -111,29 +111,40 @@ describe("Reviews Endpoints", function() {
 
   describe(`POST /api/reviews`, () => {
     const testUsers = helpers.makeUsersArray();
-    beforeEach("insert malicious Review", () => {
-      return db.into("users").insert(testUsers);
-    });
+    // beforeEach("insert malicious Review", () => {
+    //   return db.into("users").insert(testUsers);
+    // });
 
     it(`creates an Review, responding with 201 and the new Review`, () => {
       const newReview = {
-        title: "Test new Review",
-        style: "Listicle",
-        content: "Test new Reviewcontent..."
+        id: 2,
+        tagline: "tagline",
+        band_name: "band",
+        venue: "venue",
+        show_date: "2017-12-31T05:00:00.000Z",
+        posted: "2017-12-31T05:00:00.000Z",
+        content: "content",
+        rating: 3,
+        username: "username2"
       };
       return supertest(app)
         .post("/api/reviews")
         .send(newReview)
         .expect(201)
         .expect(res => {
-          expect(res.body.title).to.eql(newReview.title);
-          expect(res.body.style).to.eql(newReview.style);
+          expect(res.body.tagline).to.eql(newReview.tagline);
+          expect(res.body.venue).to.eql(newReview.venue);
           expect(res.body.content).to.eql(newReview.content);
+          expect(res.body.band_name).to.eql(newReview.band_name);
+          expect(res.body.rating).to.eql(newReview.rating);
+          expect(res.body.username).to.eql(newReview.username);
+          expect(res.body.show_date).to.eql(newReview.show_date);
+          expect(res.body.posted).to.eql(newReview.posted);
           expect(res.body).to.have.property("id");
           expect(res.headers.location).to.eql(`/api/reviews/${res.body.id}`);
           const expected = new Intl.DateTimeFormat("en-US").format(new Date());
           const actual = new Intl.DateTimeFormat("en-US").format(
-            new Date(res.body.date_published)
+            new Date(res.body.posted)
           );
           expect(actual).to.eql(expected);
         })
@@ -144,13 +155,27 @@ describe("Reviews Endpoints", function() {
         );
     });
 
-    const requiredFields = ["title", "style", "content"];
+    const requiredFields = [
+      "tagline",
+      "band_name",
+      "venue",
+      "show_date",
+      "posted",
+      "content",
+      "rating",
+      "username"
+    ];
 
     requiredFields.forEach(field => {
       const newReview = {
-        title: "Test new Review",
-        style: "Listicle",
-        content: "Test new Reviewcontent..."
+        tagline: "tagline",
+        band_name: "band",
+        venue: "venue",
+        show_date: "2017-12-31T05:00:00.000Z",
+        posted: "2017-12-31T05:00:00.000Z",
+        content: "content",
+        rating: 3,
+        username: "username1"
       };
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -182,8 +207,8 @@ describe("Reviews Endpoints", function() {
 
       beforeEach("insert reviews", () => {
         return db
-          .into("users")
-          .insert(testUsers)
+          .into("reviews")
+          .insert(testReviews)
           .then(() => {
             return db.into("reviews").insert(testReviews);
           });
@@ -212,7 +237,7 @@ describe("Reviews Endpoints", function() {
         const ReviewId = 123456;
         return supertest(app)
           .delete(`/api/reviews/${ReviewId}`)
-          .expect(404, { error: { message: `Reviewdoesn't exist` } });
+          .expect(404, { error: { message: `Review doesn't exist` } });
       });
     });
 
@@ -222,8 +247,8 @@ describe("Reviews Endpoints", function() {
 
       beforeEach("insert reviews", () => {
         return db
-          .into("users")
-          .insert(testUsers)
+          .into("reviews")
+          .insert(testReviews)
           .then(() => {
             return db.into("reviews").insert(testReviews);
           });
@@ -232,9 +257,14 @@ describe("Reviews Endpoints", function() {
       it("responds with 204 and updates the Review", () => {
         const idToUpdate = 2;
         const updateReview = {
-          title: "updated Reviewtitle",
-          style: "Interview",
-          content: "updated Reviewcontent"
+          tagline: "updated tagline",
+          band_name: "band",
+          venue: "venue",
+          show_date: "2017-12-31T05:00:00.000Z",
+          posted: "2017-12-31T05:00:00.000Z",
+          content: "updated content",
+          rating: 3,
+          username: "username1"
         };
         const expectedReview = {
           ...testReviews[idToUpdate - 1],
@@ -258,7 +288,7 @@ describe("Reviews Endpoints", function() {
           .send({ irrelevantField: "foo" })
           .expect(400, {
             error: {
-              message: `Request body must content either 'title', 'style' or 'content'`
+              message: `Request body must contain either band name, venue, rating or date`
             }
           });
       });
@@ -266,7 +296,7 @@ describe("Reviews Endpoints", function() {
       it(`responds with 204 when updating only a subset of fields`, () => {
         const idToUpdate = 2;
         const updateReview = {
-          title: "updated Reviewtitle"
+          title: "updated Review title"
         };
         const expectedReview = {
           ...testReviews[idToUpdate - 1],
