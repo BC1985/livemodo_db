@@ -47,13 +47,13 @@ describe("Reviews Endpoints", function() {
   afterEach("cleanup", () => db.raw("TRUNCATE reviews"));
 
   describe(`GET /api/reviews`, () => {
-    // context(`Given no reviews`, () => {
-    //   it(`responds with 200 and an empty list`, () => {
-    //     return supertest(app)
-    //       .get("/api/reviews")
-    //       .expect(200, []);
-    //   });
-    // });
+    context(`Given no reviews`, () => {
+      it(`responds with 200 and an empty list`, () => {
+        return supertest(app)
+          .get("/api/reviews")
+          .expect(200, []);
+      });
+    });
 
     context("Given there are reviews in the database", () => {
       const testUsers = helpers.makeUsersArray();
@@ -115,7 +115,7 @@ describe("Reviews Endpoints", function() {
     //   return db.into("users").insert(testUsers);
     // });
 
-    it(`creates an Review, responding with 201 and the new Review`, () => {
+    it(`creates a review, responding with 201 and the new review`, () => {
       const newReview = {
         id: 2,
         tagline: "tagline",
@@ -178,11 +178,12 @@ describe("Reviews Endpoints", function() {
         username: "username1"
       };
 
-      it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+      it(`responds with 400 and an error message when '${field}' is missing`, () => {
         delete newReview[field];
 
         return supertest(app)
           .post("/api/reviews")
+          .set("Authorization", "bearer", helpers.makeAuthHeader(testUsers[0]))
           .send(newReview)
           .expect(400, {
             error: { message: `Missing '${field}' in request body` }
@@ -197,7 +198,7 @@ describe("Reviews Endpoints", function() {
         const ReviewId = 123456;
         return supertest(app)
           .delete(`/api/reviews/${ReviewId}`)
-          .expect(404, { error: { message: `Reviewdoesn't exist` } });
+          .expect(404, { error: { message: `Review doesn't exist` } });
       });
     });
 
@@ -214,7 +215,7 @@ describe("Reviews Endpoints", function() {
           });
       });
 
-      it("responds with 204 and removes the Review", () => {
+      it("responds with 204 and removes the review", () => {
         const idToRemove = 2;
         const expectedReviews = testReviews.filter(
           Review => Review.id !== idToRemove
