@@ -1,5 +1,34 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+function makeReviewsArray() {
+  return [
+    {
+      id: 1,
+      tagline: "tagline",
+      band_name: "band",
+      venue: "venue",
+      show_date: "2017-12-31T05:00:00.000Z",
+      posted: "2017-12-31T05:00:00.000Z",
+      content: "content",
+      user_id: 1,
+      rating: 3,
+      username: "username1"
+    },
+    {
+      id: 2,
+      tagline: "tagline",
+      band_name: "band",
+      venue: "venue",
+      show_date: "2017-12-31T05:00:00.000Z",
+      posted: "2017-12-31T05:00:00.000Z",
+      content: "content",
+      user_id: 2,
+      rating: 3,
+      username: "username2"
+    }
+  ];
+}
 function makeUsersArray() {
   return [
     {
@@ -81,6 +110,7 @@ function seedUsers(db) {
 }
 
 module.exports = {
+  makeReviewsArray,
   makeUsersArray,
   cleanTables,
   makeAuthHeader,
