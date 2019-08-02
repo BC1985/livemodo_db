@@ -14,56 +14,43 @@ reviewsRouter.route("/").get((req, res, next) => {
     .catch(next);
 });
 
-reviewsRouter
-  .route("/")
-  .post(verifyToken, requireAuth, jsonParser, (req, res, next) => {
-    const knexInstance = req.app.get("db");
-    const {
-      tagline,
-      band_name,
-      venue,
-      show_date,
-      content,
-      posted,
-      rating
-    } = req.body;
-    const newReview = {
-      tagline,
-      band_name,
-      venue,
-      posted,
-      show_date,
-      content,
-      rating
-    };
-    for (const [key, value] of Object.entries(newReview))
-      if (value === null) {
-        return res.status(400).json({
-          error: { message: `Missing ${key} in request body` }
-        });
-      }
-    newReview.user_id = req.user.id;
-    newReview.username = req.user.username;
-    reviewsServices
-      .postReview(knexInstance, newReview)
-      .then(review => {
-        const dbReview = review[0];
-        res.status(200).json(dbReview);
-      })
-      .catch(next);
-  });
+reviewsRouter.route("/").post(requireAuth, jsonParser, (req, res, next) => {
+  const knexInstance = req.app.get("db");
 
-function verifyToken(req, res, next) {
-  const bearerHeader = req.get("Authorization");
-  if (bearerHeader) {
-    const bearer = bearerHeader.split(" ");
-    const bearerToken = bearer[1];
-    req.token = bearerToken;
-    next();
-  } else {
-    res.status(403).send("forbidden");
-  }
-}
+  const {
+    tagline,
+    band_name,
+    venue,
+    show_date,
+    content,
+    posted,
+    rating
+  } = req.body;
+  const newReview = {
+    tagline,
+    band_name,
+    venue,
+    posted,
+    show_date,
+    content,
+    rating
+  };
+  for (const [key, value] of Object.entries(newReview))
+    if (value === null) {
+      return res.status(400).json({
+        error: { message: `Missing ${key} in request body` }
+      });
+    }
+  newReview.user_id = req.user.id;
+  newReview.username = req.user.username;
+  reviewsServices
+    .postReview(knexInstance, newReview)
+    .then(review => {
+      const dbReview = review[0];
+      res.status(201).json(dbReview);
+    })
+    .catch(next);
+});
 
 reviewsRouter
   .route("/:id")
@@ -73,8 +60,8 @@ reviewsRouter
     reviewsServices
       .getReviewById(knexInstance, id)
       .then(review => {
-        if (!review) {
-          res.status(404).send("Review doesn't exist");
+        if (!review || review.length === 0) {
+          res.status(404).json({ error: { message: "Review doesn't exist" } });
         } else {
           res.status(200).json(review[0]);
         }
@@ -86,9 +73,9 @@ reviewsRouter
     const { id } = req.params;
     reviewsServices
       .deleteReview(knexInstance, id)
-      .then(() => {
+      .then(id => {
         if (!id) {
-          res.status(404).send("No review found");
+          res.status(404).json({ error: { message: "Review doesn't exist" } });
         }
         res.status(200).send(`Review with id ${id} deleted`);
       })
