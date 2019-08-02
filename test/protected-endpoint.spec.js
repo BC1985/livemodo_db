@@ -4,58 +4,10 @@ const helpers = require("./test-helpers");
 
 describe("Protected endpoints", function() {
   let db;
-  function makeReviewsArray() {
-    return [
-      {
-        id: 1,
-        tagline: "tagline",
-        band_name: "band",
-        venue: "venue",
-        show_date: "2017-12-31T05:00:00.000Z",
-        posted: "2017-12-31T05:00:00.000Z",
-        content: "content",
-        rating: 3,
-        username: "username1"
-      },
-      {
-        id: 2,
-        tagline: "tagline",
-        band_name: "band",
-        venue: "venue",
-        show_date: "2017-12-31T05:00:00.000Z",
-        posted: "2017-12-31T05:00:00.000Z",
-        content: "content",
-        rating: 3,
-        username: "username2"
-      }
-    ];
-  }
-  const testUsers = [
-    {
-      id: 1,
-      username: "Bob",
-      first_name: "Bob",
-      last_name: "Smith",
-      password: "11AAaa!!",
-      email: "test1@email.com"
-    },
-    {
-      id: 2,
-      username: "John",
-      first_name: "John",
-      last_name: "Doe",
-      password: "@@22BBbb",
-      email: "test2@email.com"
-    },
-    {
-      id: 3,
-      username: "Jane",
-      first_name: "Jane",
-      last_name: "Doe",
-      password: "##33CCcc",
-      email: "test3@email.com"
-    }
-  ];
+
+  const testUsers = helpers.makeUsersArray();
+  const testUser = testUsers[0];
+
   before("make knex instance", () => {
     db = knex({
       client: "pg",
@@ -65,13 +17,6 @@ describe("Protected endpoints", function() {
   });
 
   after("disconnect from db", () => db.destroy());
-
-  before("cleanup", () => helpers.cleanTables(db));
-
-  afterEach("cleanup", () => helpers.cleanTables(db));
-
-  beforeEach("insert reviews", () => makeReviewsArray());
-
   const protectedEndpoint = {
     name: "POST /api/reviews/",
     path: "/api/reviews/",
@@ -86,7 +31,7 @@ describe("Protected endpoints", function() {
     });
 
     it(`responds 401 'Unauthorized request' when invalid JWT secret`, () => {
-      const validUser = testUsers[0];
+      const validUser = testUser;
       const invalidSecret = "bad-secret";
       return protectedEndpoint
         .method(protectedEndpoint.path)
