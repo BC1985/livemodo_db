@@ -77,7 +77,7 @@ reviewsRouter
         if (!id) {
           res.status(404).json({ error: { message: "Review doesn't exist" } });
         }
-        res.status(200).send(`Review with id ${id} deleted`);
+        res.status(204).send(`Review with id ${id} deleted`);
       })
       .catch(next);
   })
@@ -104,12 +104,17 @@ reviewsRouter
     };
     const numberOfValues = Object.values(reviewToUpdate).filter(Boolean).length;
     if (numberOfValues == 0) {
-      res.status(400).json({ error: "Must contain at least one field" });
+      res.status(400).json({
+        error: {
+          message:
+            "Request body must contain either band name, venue, rating or date"
+        }
+      });
     }
     reviewsServices
       .updateReviewById(knexInstance, id, reviewToUpdate)
       .then(() => {
-        res.status(200).send(`Review with ID ${id} updated`);
+        res.status(204).send(`Review with ID ${id} updated`);
       })
       .catch(next);
   });
