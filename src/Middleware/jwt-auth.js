@@ -3,7 +3,7 @@ const AuthService = require("../auth/auth-services");
 function requireAuth(req, res, next) {
   const authToken = req.get("Authorization") || "";
   let bearerToken;
-  if (!authToken.toLowerCase().startsWith("bearer")) {
+  if (!authToken.startsWith("Bearer")) {
     return res.status(401).json({ error: "Missing bearer token" });
   } else {
     bearerToken = authToken.slice(7, authToken.length);
