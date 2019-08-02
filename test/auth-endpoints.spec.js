@@ -52,7 +52,7 @@ describe("Auth Endpoints", function() {
         .expect(400, { error: `Incorrect username` });
     });
 
-    it.only(`responds 400 'invalid password' when bad password`, () => {
+    it(`responds 400 'invalid password' when bad password`, () => {
       const userInvalidPass = {
         username: testUser.username,
         password: "incorrect"
