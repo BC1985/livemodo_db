@@ -32,14 +32,18 @@ describe("Users Endpoints", function() {
           password: "11AAaa!!",
           email: "123@email.com"
         };
-        it(`responds with 400 required error when '${field}' is missing`, () => {
+        it(`responds with 400 required error when '${field}' is missing`, done => {
           delete registerAttemptBody[field];
           return supertest(app)
             .post("/api/users")
             .send(registerAttemptBody)
-            .expect(400, {
-              error: `Missing '${field}' in request body`
-            });
+            .expect(
+              400,
+              {
+                error: `Missing '${field}' in request body`
+              },
+              done()
+            );
         });
       });
     });
